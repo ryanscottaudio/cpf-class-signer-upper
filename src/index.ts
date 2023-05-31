@@ -4,12 +4,13 @@ import { getBrowser } from "./get-browser";
 
 const SHEET_ID = "1_Bk7NYnnkpjUNa1TMPPyxxZjrmooToO9lxN4BY0h5uo";
 
+const isLocal = !!process.env.IS_LOCAL;
 const sheetsEmail = process.env.SHEETS_EMAIL;
 const sheetsPrivateKey = process.env.SHEETS_PRIVATE_KEY;
 
-const main = async () => {
+export const handler = async () => {
   if (!sheetsEmail || !sheetsPrivateKey) {
-    throw new Error("No Google Sheets API key present");
+    throw new Error("No Google Sheets auth info present");
   }
 
   const sheet = await getSheet(SHEET_ID, {
@@ -17,7 +18,7 @@ const main = async () => {
     privateKey: sheetsPrivateKey.split(String.raw`\n`).join("\n"),
   });
 
-  const browser = await getBrowser();
+  const browser = await getBrowser(isLocal);
   const boundProcessSheet = processSheet(browser);
   await Promise.allSettled(sheet.sheetsByIndex.map(boundProcessSheet));
 
@@ -27,6 +28,6 @@ const main = async () => {
   await browser.close();
 };
 
-main().catch((error) => {
-  console.log(error);
-});
+if (isLocal) {
+  handler();
+}
