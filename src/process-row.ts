@@ -118,6 +118,6 @@ export const processRow =
       .replace("Cancel", "")
       .toLowerCase();
     await finish(
-      `was not signed up for (${notSignedUpReason}); will try to sign up again in 1 hour`
+      `was not signed up for (${notSignedUpReason}); will try to sign up again in 15 minutes`
     );
   };
