@@ -90,7 +90,7 @@ export const processRow =
 
     const bookButton = classElement.locator("[data-cy='book-button']");
     try {
-      await bookButton.waitFor({ state: "visible", timeout: 100 });
+      await bookButton.waitFor({ state: "visible", timeout: 500 });
     } catch (error) {
       await finish("was full and cannot be signed up for", false);
       return;
@@ -106,7 +106,7 @@ export const processRow =
 
     const modal = page.locator(".modal");
     try {
-      await modal.waitFor({ state: "visible", timeout: 100 });
+      await modal.waitFor({ state: "visible", timeout: 500 });
     } catch (error) {
       // No modal means that the bot successfully signed up for the class.
       await finish("was successfully joined", true);
