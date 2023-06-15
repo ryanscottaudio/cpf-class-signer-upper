@@ -5,4 +5,5 @@ export const getBrowser = async (isLocal: boolean): Promise<Browser> =>
   playwright.launch({
     args: isLocal ? undefined : chromium.args,
     executablePath: isLocal ? undefined : await chromium.executablePath(),
+    headless: true,
   });
