@@ -1,6 +1,7 @@
 import { getSheet } from "./get-sheet";
 import { processSheet } from "./process-sheet";
 import { getBrowser } from "./get-browser";
+import { logMessage } from "./log-message";
 
 const SHEET_ID = "1_Bk7NYnnkpjUNa1TMPPyxxZjrmooToO9lxN4BY0h5uo";
 
@@ -19,12 +20,22 @@ export const handler = async () => {
   });
 
   const browser = await getBrowser(isLocal);
-  const boundProcessSheet = processSheet(browser);
-  await Promise.allSettled(sheet.sheetsByIndex.map(boundProcessSheet));
+  await Promise.all(
+    sheet.sheetsByIndex.map(async (sheet, i) => {
+      const browserContext = await browser.newContext();
 
-  for (const context of browser.contexts()) {
-    await context.close();
-  }
+      try {
+        await processSheet(browserContext, sheet);
+      } catch (error) {
+        logMessage(
+          `Received unexpected error while attempting to process sheet with index ${i}: ${error}`
+        );
+      }
+
+      await browserContext.close();
+    })
+  );
+
   await browser.close();
 };
 
