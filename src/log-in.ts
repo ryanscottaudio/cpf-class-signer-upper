@@ -1,11 +1,12 @@
-import { Page } from "playwright-core";
+import { BrowserContext } from "playwright-core";
 import { logMessage } from "./log-message";
 
 export const logIn = async (
-  page: Page,
+  browserContext: BrowserContext,
   emailAddress: string,
   password: string
 ) => {
+  const page = await browserContext.newPage();
   await page.goto("https://mymembership.chelseapiers.com/login");
   await page.type("#email", emailAddress);
   await page.type("#password", password);

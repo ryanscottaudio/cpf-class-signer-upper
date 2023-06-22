@@ -22,8 +22,7 @@ export const processSheet = async (
     return;
   }
 
-  const loginPage = await browserContext.newPage();
-  await logIn(loginPage, emailAddress, password);
+  await logIn(browserContext, emailAddress, password);
 
   await Promise.allSettled(
     rowsToSignUpFor.map(
@@ -31,5 +30,5 @@ export const processSheet = async (
     )
   );
 
-  await logOut(loginPage);
+  await logOut(browserContext);
 };
