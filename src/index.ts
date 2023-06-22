@@ -2,6 +2,7 @@ import { getSheet } from "./get-sheet";
 import { processSheet } from "./process-sheet";
 import { getBrowser } from "./get-browser";
 import { logMessage } from "./log-message";
+import { BrowserContext } from "playwright-core";
 
 const SHEET_ID = "1_Bk7NYnnkpjUNa1TMPPyxxZjrmooToO9lxN4BY0h5uo";
 
@@ -20,10 +21,10 @@ export const handler = async () => {
   });
 
   const browser = await getBrowser(isLocal);
+  const browserContext = await browser.newContext();
 
   const sheets = sheet.sheetsByIndex;
   for (let i = 0; i < sheets.length; i++) {
-    const browserContext = await browser.newContext();
     const sheet = sheets[i];
 
     try {
@@ -33,12 +34,11 @@ export const handler = async () => {
         `Received unexpected error while attempting to process sheet with index ${i}: ${error}`
       );
     }
-
-    logMessage(`Closing browser context for sheet with index ${i}...`);
-    await browserContext.close();
-    logMessage(`Closed browser context for sheet with index ${i}.`);
   }
 
+  logMessage(`Closing browser context...`);
+  await browserContext.close();
+  logMessage(`Closed browser context.`);
   await browser.close();
 };
 
