@@ -13,14 +13,22 @@ export const logIn = async (
   await page.type("#password", password);
   await page.click("button[type='submit']");
 
-  try {
-    await page.waitForURL(MAIN_URL, {
-      timeout: 2000,
-    });
-  } catch (error) {
-    logMessage(
+  const isLoginSuccessful = await Promise.race([
+    (async () => {
+      await page.waitForURL(MAIN_URL);
+      return true;
+    })(),
+    (async () => {
+      await page
+        .locator("[data-cy=error-section]")
+        .waitFor({ state: "visible" });
+      return false;
+    })(),
+  ]);
+
+  if (!isLoginSuccessful) {
+    throw new Error(
       `CPF account for ${emailAddress} could not be accessed; please check login credentials.`
     );
-    throw error;
   }
 };
