@@ -21,27 +21,25 @@ export const handler = async () => {
 
   const browser = await getBrowser(isLocal);
 
-  await Promise.allSettled(
-    sheet.sheetsByIndex.map(async (sheet, i) => {
-      const browserContext = await browser.newContext();
+  const sheets = sheet.sheetsByIndex;
+  for (let i = 0; i < sheets.length; i++) {
+    const browserContext = await browser.newContext();
+    const sheet = sheets[i];
 
-      try {
-        await processSheet(browserContext, sheet);
-      } catch (error) {
-        logMessage(
-          `Received unexpected error while attempting to process sheet with index ${i}: ${error}`
-        );
-      }
+    try {
+      await processSheet(browserContext, sheet);
+    } catch (error) {
+      logMessage(
+        `Received unexpected error while attempting to process sheet with index ${i}: ${error}`
+      );
+    }
 
-      logMessage(`Closing browser context for sheet with index ${i}...`);
-      await browserContext.close();
-      logMessage(`Closed browser context for sheet with index ${i}.`);
-    })
-  );
+    logMessage(`Closing browser context for sheet with index ${i}...`);
+    await browserContext.close();
+    logMessage(`Closed browser context for sheet with index ${i}.`);
+  }
 
-  logMessage(`Closing browser...`);
   await browser.close();
-  logMessage(`Closed browser.`);
 };
 
 if (isLocal) {

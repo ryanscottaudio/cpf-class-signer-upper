@@ -22,13 +22,12 @@ export const processSheet = async (
     return;
   }
 
-  await logIn(browserContext, emailAddress, password);
+  await logIn(emailAddress, password, browserContext);
 
-  await Promise.allSettled(
-    rowsToSignUpFor.map(
-      async (row) => await processRow(emailAddress, browserContext, row)
-    )
-  );
+  for (let i = 0; i < rowsToSignUpFor.length; i++) {
+    const row = rowsToSignUpFor[i];
+    await processRow(emailAddress, browserContext, row);
+  }
 
   await logOut(browserContext);
 };

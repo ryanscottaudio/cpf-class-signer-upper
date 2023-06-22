@@ -1,6 +1,6 @@
 import { format, isBefore, parse } from "date-fns";
 import { GoogleSpreadsheetRow } from "google-spreadsheet";
-import { BrowserContext, Page } from "playwright-core";
+import { BrowserContext } from "playwright-core";
 import { logMessage } from "./log-message";
 import { BOOKING_URL } from "./constants";
 

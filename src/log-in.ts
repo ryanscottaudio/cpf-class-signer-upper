@@ -1,11 +1,10 @@
 import { BrowserContext } from "playwright-core";
-import { logMessage } from "./log-message";
 import { LOGIN_URL, MAIN_URL } from "./constants";
 
 export const logIn = async (
-  browserContext: BrowserContext,
   emailAddress: string,
-  password: string
+  password: string,
+  browserContext: BrowserContext
 ) => {
   const page = await browserContext.newPage();
   await page.goto(LOGIN_URL);
