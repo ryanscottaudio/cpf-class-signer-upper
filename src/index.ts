@@ -20,6 +20,7 @@ export const handler = async () => {
   });
 
   const browser = await getBrowser(isLocal);
+
   await Promise.allSettled(
     sheet.sheetsByIndex.map(async (sheet, i) => {
       const browserContext = await browser.newContext();
@@ -32,11 +33,15 @@ export const handler = async () => {
         );
       }
 
+      logMessage(`Closing browser context for sheet with index ${i}...`);
       await browserContext.close();
+      logMessage(`Closed browser context for sheet with index ${i}.`);
     })
   );
 
+  logMessage(`Closing browser...`);
   await browser.close();
+  logMessage(`Closed browser.`);
 };
 
 if (isLocal) {
