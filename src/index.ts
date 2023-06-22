@@ -20,7 +20,7 @@ export const handler = async () => {
   });
 
   const browser = await getBrowser(isLocal);
-  await Promise.all(
+  await Promise.allSettled(
     sheet.sheetsByIndex.map(async (sheet, i) => {
       const browserContext = await browser.newContext();
 

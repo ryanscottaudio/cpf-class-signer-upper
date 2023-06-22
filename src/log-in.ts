@@ -21,9 +21,4 @@ export const logIn = async (
     );
     throw error;
   }
-
-  page.click("a:text('Book new')");
-  await page.waitForURL(
-    "https://mymembership.chelseapiers.com/booking?centers=14"
-  );
 };
