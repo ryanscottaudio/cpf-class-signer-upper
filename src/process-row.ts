@@ -45,14 +45,21 @@ export const processRow = async (
     return;
   }
 
-  const page = await browserContext.newPage();
   const queryStringDate = [
     format(date, "yyyy"),
     format(date, "MM"),
     format(date, "dd"),
   ].join("-");
-  const url = `${BOOKING_URL}?centers=14&date=${queryStringDate}`;
-  await page.goto(url);
+  const searchParams = new URLSearchParams({
+    centers: "14", // Downtown Brooklyn location
+    date: queryStringDate,
+  });
+
+  const url = new URL(BOOKING_URL);
+  url.search = searchParams.toString();
+
+  const page = await browserContext.newPage();
+  await page.goto(url.toString());
 
   // Wait for class list to populate
   await page
