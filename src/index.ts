@@ -36,9 +36,7 @@ export const handler = async () => {
     }
   }
 
-  logMessage(`Closing browser context...`);
   await browserContext.close();
-  logMessage(`Closed browser context.`);
   await browser.close();
 };
 
