@@ -1,5 +1,6 @@
 import { BrowserContext } from "playwright-core";
 import { logMessage } from "./log-message";
+import { LOGIN_URL, MAIN_URL } from "./constants";
 
 export const logIn = async (
   browserContext: BrowserContext,
@@ -7,13 +8,13 @@ export const logIn = async (
   password: string
 ) => {
   const page = await browserContext.newPage();
-  await page.goto("https://mymembership.chelseapiers.com/login");
+  await page.goto(LOGIN_URL);
   await page.type("#email", emailAddress);
   await page.type("#password", password);
   await page.click("button[type='submit']");
 
   try {
-    await page.waitForURL("https://mymembership.chelseapiers.com/", {
+    await page.waitForURL(MAIN_URL, {
       timeout: 2000,
     });
   } catch (error) {

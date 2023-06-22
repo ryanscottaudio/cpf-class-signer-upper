@@ -2,6 +2,7 @@ import { format, isBefore, parse } from "date-fns";
 import { GoogleSpreadsheetRow } from "google-spreadsheet";
 import { BrowserContext, Page } from "playwright-core";
 import { logMessage } from "./log-message";
+import { BOOKING_URL } from "./constants";
 
 const markRowAsSignedUp = async (
   row: GoogleSpreadsheetRow,
@@ -50,7 +51,7 @@ export const processRow = async (
     format(date, "MM"),
     format(date, "dd"),
   ].join("-");
-  const url = `https://mymembership.chelseapiers.com/booking?centers=14&date=${queryStringDate}`;
+  const url = `${BOOKING_URL}?centers=14&date=${queryStringDate}`;
   await page.goto(url);
 
   // Wait for class list to populate
