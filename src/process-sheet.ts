@@ -1,6 +1,6 @@
 import { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
-import { logIn } from "./log-in";
 import { BrowserContext } from "playwright-core";
+import { logIn } from "./log-in";
 import { processRow } from "./process-row";
 import { logOut } from "./log-out";
 import { logMessage } from "./log-message";

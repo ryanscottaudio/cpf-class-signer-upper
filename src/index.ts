@@ -3,7 +3,6 @@ import { getSheet } from "./get-sheet";
 import { processSheet } from "./process-sheet";
 import { getBrowser } from "./get-browser";
 import { logMessage } from "./log-message";
-import { BrowserContext } from "playwright-core";
 
 const SHEET_ID = "1_Bk7NYnnkpjUNa1TMPPyxxZjrmooToO9lxN4BY0h5uo";
 
