@@ -1,3 +1,4 @@
+import { APIGatewayProxyResult } from "aws-lambda";
 import { getSheet } from "./get-sheet";
 import { processSheet } from "./process-sheet";
 import { getBrowser } from "./get-browser";
@@ -10,7 +11,7 @@ const isLocal = !!process.env.IS_LOCAL;
 const sheetsEmail = process.env.SHEETS_EMAIL;
 const sheetsPrivateKey = process.env.SHEETS_PRIVATE_KEY;
 
-export const handler = async () => {
+export const handler = async (): Promise<APIGatewayProxyResult> => {
   if (!sheetsEmail || !sheetsPrivateKey) {
     throw new Error("No Google Sheets auth info present");
   }
@@ -38,6 +39,8 @@ export const handler = async () => {
 
   await browserContext.close();
   await browser.close();
+
+  return { statusCode: 200, body: "ok" };
 };
 
 if (isLocal) {
