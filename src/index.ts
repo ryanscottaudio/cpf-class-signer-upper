@@ -3,8 +3,8 @@ import { getSheet } from "./get-sheet";
 import { processSheet } from "./process-sheet";
 import { getBrowser } from "./get-browser";
 import { logMessage } from "./log-message";
-
-const SHEET_ID = "1_Bk7NYnnkpjUNa1TMPPyxxZjrmooToO9lxN4BY0h5uo";
+import { verifyEmailer } from "./send-email";
+import { SHEET_ID } from "./constants";
 
 const isLocal = !!process.env.IS_LOCAL;
 const sheetsEmail = process.env.SHEETS_EMAIL;
@@ -19,6 +19,8 @@ export const handler = async (): Promise<APIGatewayProxyResult> => {
     email: sheetsEmail,
     privateKey: sheetsPrivateKey.split(String.raw`\n`).join("\n"),
   });
+
+  await verifyEmailer();
 
   const browser = await getBrowser(isLocal);
   const browserContext = await browser.newContext();

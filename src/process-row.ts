@@ -3,6 +3,7 @@ import { GoogleSpreadsheetRow } from "google-spreadsheet";
 import { BrowserContext } from "playwright-core";
 import { logMessage } from "./log-message";
 import { BOOKING_URL } from "./constants";
+import { sendSignupEmail } from "./send-email";
 
 const markRowAsSignedUp = async (
   row: GoogleSpreadsheetRow,
@@ -24,13 +25,23 @@ export const processRow = async (
     "Class name": className,
   } = row as unknown as { Date: string; Time: string; "Class name": string };
 
-  const finish = async (message: string, markRow?: boolean) => {
+  const finish = async (message: string, isSignedUp?: boolean) => {
     logMessage(
       `${emailAddress}: class ${className} at ${classTime} on ${classDate} ${message}`
     );
 
-    if (markRow !== undefined) {
-      await markRowAsSignedUp(row, markRow);
+    if (isSignedUp !== undefined) {
+      await markRowAsSignedUp(row, isSignedUp);
+
+      if (isSignedUp) {
+        try {
+          await sendSignupEmail(emailAddress, className, classTime, classDate);
+        } catch (error) {
+          logMessage(
+            `Could not send successful class signup email to ${emailAddress} for class ${className} at ${classTime} on ${classDate}: ${error}`
+          );
+        }
+      }
     }
   };
 
