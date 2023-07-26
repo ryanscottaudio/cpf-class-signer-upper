@@ -34,11 +34,12 @@ export const sendSignupEmail = (
   emailAddress: string,
   className: string,
   classTime: string,
-  classDate: string
+  classDate: string,
+  classLocation: string
 ) =>
   sendEmail({
     to: emailAddress,
-    subject: `You have been signed up for class ${className} at ${classTime} on ${classDate} at Chelsea Piers Fitness Downtown Brooklyn`,
+    subject: `You have been signed up for class ${className} at ${classTime} on ${classDate} at Chelsea Piers Fitness ${classLocation}`,
     html: `
       <ul>
         <li>
@@ -49,6 +50,9 @@ export const sendSignupEmail = (
         </li>
         <li>
           Class date: <strong>${classDate}</strong>
+        </li>
+        <li>
+          Class location: <strong>${classLocation}</strong>
         </li>
         <li>
           Class location: <strong>Chelsea Piers Fitness Downtown Brooklyn</strong>

@@ -4,6 +4,7 @@ import { logIn } from "./log-in";
 import { processRow } from "./process-row";
 import { logOut } from "./log-out";
 import { logMessage } from "./log-message";
+import { Row } from "./types";
 
 export const processSheet = async (
   browserContext: BrowserContext,
@@ -15,8 +16,8 @@ export const processSheet = async (
     throw `Auth credentials are not present for ${emailAddress}`;
   }
 
-  const rows = await sheet.getRows();
-  const rowsToSignUpFor = rows.filter((row) => !row["Signed up?"]);
+  const rows = await sheet.getRows<Row>();
+  const rowsToSignUpFor = rows.filter((row) => !row.get("Signed up?"));
   if (rowsToSignUpFor.length === 0) {
     logMessage(`No class sign-up requests were found for ${emailAddress}`);
     return;

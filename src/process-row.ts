@@ -4,41 +4,53 @@ import { BrowserContext } from "playwright-core";
 import { logMessage } from "./log-message";
 import { BOOKING_URL } from "./constants";
 import { sendSignupEmail } from "./send-email";
+import { Location, Row } from "./types";
+
+const LOCATION_TO_QUERY_STRING = {
+  Chelsea: "13",
+  "Downtown Brooklyn": "14",
+  "Prospect Heights": "15",
+} as const satisfies { [key in Location]: string };
 
 const markRowAsSignedUp = async (
-  row: GoogleSpreadsheetRow,
+  row: GoogleSpreadsheetRow<Row>,
   isSignedUp: boolean
 ) => {
   const characterToMark = isSignedUp ? "✅" : "❌";
-  row["Signed up?"] = characterToMark;
+  row.set("Signed up?", characterToMark);
   await row.save();
 };
 
 export const processRow = async (
   emailAddress: string,
   browserContext: BrowserContext,
-  row: GoogleSpreadsheetRow
+  row: GoogleSpreadsheetRow<Row>
 ) => {
-  const {
-    Date: classDate,
-    Time: classTime,
-    "Class name": className,
-  } = row as unknown as { Date: string; Time: string; "Class name": string };
+  const classDate: Row["Date"] = row.get("Date");
+  const classTime: Row["Time"] = row.get("Time");
+  const className: Row["Class name"] = row.get("Class name");
+  const classLocation: Row["Location"] = row.get("Location");
+
+  const classLogString = `class ${className} at ${classTime} on ${classDate} at ${classLocation}`;
 
   const finish = async (message: string, isSignedUp?: boolean) => {
-    logMessage(
-      `${emailAddress}: class ${className} at ${classTime} on ${classDate} ${message}`
-    );
+    logMessage(`${emailAddress}: ${classLogString} ${message}`);
 
     if (isSignedUp !== undefined) {
       await markRowAsSignedUp(row, isSignedUp);
 
       if (isSignedUp) {
         try {
-          await sendSignupEmail(emailAddress, className, classTime, classDate);
+          await sendSignupEmail(
+            emailAddress,
+            className,
+            classTime,
+            classDate,
+            classLocation
+          );
         } catch (error) {
           logMessage(
-            `Could not send successful class signup email to ${emailAddress} for class ${className} at ${classTime} on ${classDate}: ${error}`
+            `Could not send successful class signup email to ${emailAddress} for ${classLogString}: ${error}`
           );
         }
       }
@@ -61,8 +73,9 @@ export const processRow = async (
     format(date, "MM"),
     format(date, "dd"),
   ].join("-");
+  const queryStringLocation = LOCATION_TO_QUERY_STRING[classLocation];
   const searchParams = new URLSearchParams({
-    centers: "14", // Downtown Brooklyn location
+    centers: queryStringLocation,
     date: queryStringDate,
   });
 
