@@ -10,12 +10,16 @@ import { SIGNUPS_IN_PROGRESS_IDENTIFIER } from "./constants";
 type SheetInfo = {
   emailAddress: string;
   password: string;
-  updateInProgressIdentifier?: string;
+  isUpdateInProgress: boolean;
 };
 
 const getSheetInfoFromSheetTitle = (title: string): SheetInfo => {
   const [emailAddress, password, updateInProgressIdentifier] = title.split(" ");
-  return { emailAddress, password, updateInProgressIdentifier };
+  return {
+    emailAddress,
+    password,
+    isUpdateInProgress: !!updateInProgressIdentifier,
+  };
 };
 
 const createSheetTitleFromSheetInfo = (
@@ -55,14 +59,14 @@ export const processSheet = async (
   browserContext: BrowserContext,
   sheet: GoogleSpreadsheetWorksheet
 ) => {
-  const { emailAddress, password, updateInProgressIdentifier } =
+  const { emailAddress, password, isUpdateInProgress } =
     getSheetInfoFromSheetTitle(sheet.title);
 
   if (!emailAddress || !password) {
     throw `Auth credentials are not present for ${emailAddress}`;
   }
 
-  if (updateInProgressIdentifier) {
+  if (isUpdateInProgress) {
     logMessage(
       `Signups for ${emailAddress} are currently being processed by another invocation of this script`
     );

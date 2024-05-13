@@ -90,21 +90,18 @@ export const processRow = async (
     .locator("[data-cy=booking-list-results]")
     .waitFor({ state: "visible" });
 
-  const classElement = (
-    await page
-      .locator(
-        `//div[contains(*, "${classTime}") and contains(*, "${className}")]`
-      )
-      .all()
-  ).pop();
+  const expandButton = page.locator(
+    `//div[contains(@data-cy, "expand-button") and contains(string(), "${classTime}") and contains(string(), "${className}")]`
+  );
 
-  if (!classElement) {
+  if (!expandButton) {
     await finish("was not found and cannot be signed up for", false);
     return;
   }
 
-  await classElement.locator("[data-cy='expand-button']").click();
+  await expandButton.click();
 
+  const classElement = expandButton.locator("..");
   const bookButton = classElement.locator("[data-cy='book-button']");
   try {
     await bookButton.waitFor({ state: "visible", timeout: 1000 });
